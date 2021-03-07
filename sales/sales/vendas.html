@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+ 
+<head>
+    <meta charset="UTF-8">
+    <script src="js/vue.min.js"></script>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <title>Relatório de Vendas</title>
+</head>
+ 
+<body>
+ 
+    <div id="app">
+        <table class="mt-5 table">
+            <thead>
+                <tr>
+                    <td> ID </td>
+                    <td> Nome </td>
+                    <td> Preco </td>
+                    <td> Quantidade </td>
+                    <td> Data </td>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="sale in sales">
+                    <td> {‌{sale.id }} </td>
+                    <td> {‌{sale.name }} </td>
+                    <td> {‌{sale.price }} </td>
+                    <td> {‌{sale.qtde }} </td>
+                    <td> {‌{sale.date }} </td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td> + </td>
+                    <td> Total </td>
+                    <td colspan="3" class="text-center"> R$ {‌{total}} </td>
+ 
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+ 
+    <script>
+        new Vue({
+            el: "#app",
+            data: {
+                title: "Refazendo a tabela",
+                sales: null,
+                total: null
+            },
+            methods: {
+                getSales() {
+                    fetch("/data/sales.json")//outra forma de pegar json dados
+                        .then(resp => resp.json())
+                        .then(sales => this.sales = sales)
+                        .then(sales => this.getTotal(sales))
+ 
+                },
+                getTotal(sales) {
+                    let preco = 0
+                    sales.map((elemento, indice) => {
+                        preco += elemento.price
+                    })
+                    this.total = preco.toFixed(2).replace('.', ',')
+                }
+            },
+            mounted() {
+                this.getSales()
+            }
+        })
+    </script>
+ 
+</body>
+ 
+</html>
